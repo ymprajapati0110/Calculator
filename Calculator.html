@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title></title>
+    <title>Calculator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .calculator {
+            width: 430px;
+            background-color: #b3e2c3;
+            padding: 10px;
+            border-radius: 30px;
+            margin-top: 25px;
+        }
+
+        #demo {
+            height: 150px;
+            background-color: #3e586e;
+            color: white;
+            font-size: 30px;
+            padding: 15px;
+            margin: 0 8px;
+            margin-bottom: 0px;
+            border-radius: 20px;
+        }
+
+        .row {
+            margin: 1px 0;
+        }
+
+        .btn {
+            height: 70px;
+            font-size: 24px;
+            border-radius: 25px;
+        }
+
+        .navbar {
+            border-radius: 30px;
+            margin-bottom: 15px;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+        }
+
+        #demo1 {
+            float: right;
+        }
+
+        #demo2 {
+            clear: right;
+            float: right;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="calculator">
+        <nav class="navbar navbar-expand-sm bg-success navbar-dark">
+            <div class="container-fluid">
+                <img src="calculator.jpg" alt="Calculator Logo" style="width:40px;" class="rounded-pill">
+                <div class="navbar-brand">Calculator</div>
+                <button type="button" class="btn-close btn-close-white" onclick="window.close()"></button>
+            </div>
+        </nav>
+
+        <div id="demo" class="border border-dark">
+            <p id="demo1"></p>
+            <p id="demo2"></p>
+        </div>
+
+        <div class="row g-3 ">
+            <div class="col-3"><button class="btn btn-secondary bg-dark w-100" onclick="clears()">C</button></div>
+            <div class="col-3"><button class="btn btn-secondary bg-dark w-100" onclick="myfunc('%')">%</button></div>
+            <div class="col-3"><button class="btn btn-secondary bg-dark w-100" onclick="backspaces()"><i
+                        class="fa-solid fa-delete-left"></i></button></div>
+            <div class="col-3"><button class="btn btn-secondary bg-dark w-100" onclick="myfunc('/')"><i
+                        class="fa-solid fa-divide"></i></button></div>
+        </div>
+        <div class="row g-3">
+            <div class="col-3"><button class="btn btn-secondary w-100" onclick="myfunc('7')">7</button></div>
+            <div class="col-3"><button class="btn btn-secondary w-100" onclick="myfunc('8')">8</button></div>
+            <div class="col-3"><button class="btn btn-secondary w-100" onclick="myfunc('9')">9</button></div>
+            <div class="col-3"><button class="btn btn-secondary bg-dark w-100" onclick="myfunc('*')"><i
+                        class="fa-solid fa-xmark"></i></button></div>
+        </div>
+        <div class="row g-3">
+            <div class="col-3"><button class="btn btn-secondary w-100" onclick="myfunc('4')">4</button></div>
+            <div class="col-3"><button class="btn btn-secondary w-100" onclick="myfunc('5')">5</button></div>
+            <div class="col-3"><button class="btn btn-secondary w-100" onclick="myfunc('6')">6</button></div>
+            <div class="col-3"><button class="btn btn-secondary bg-dark w-100" onclick="myfunc('-')"><i
+                        class="fa-solid fa-minus"></i></button></div>
+        </div>
+        <div class="row g-3">
+            <div class="col-3"><button class="btn btn-secondary w-100" onclick="myfunc('1')">1</button></div>
+            <div class="col-3"><button class="btn btn-secondary w-100" onclick="myfunc('2')">2</button></div>
+            <div class="col-3"><button class="btn btn-secondary w-100" onclick="myfunc('3')">3</button></div>
+            <div class="col-3"><button class="btn btn-secondary bg-dark w-100" onclick="myfunc('+')"><i
+                        class="fa-solid fa-plus"></i></button></div>
+        </div>
+        <div class="row g-3">
+            <div class="col-3"><button class="btn btn-secondary bg-dark w-100"><i class="fa-solid fa-plus-minus"
+                        onclick="negate()"></i></button></div>
+            <div class="col-3"><button class="btn btn-secondary w-100" onclick="myfunc('0')">0</button></div>
+            <div class="col-3"><button class="btn btn-secondary w-100" onclick="myfunc('.')">.</button></div>
+            <div class="col-3"><button class="btn btn-secondary bg-primary w-100" onclick="answer()"><i
+                        class="fa-solid fa-equals"></i></button></div>
+        </div>
+    </div>
+
+    <script>
+        let input = "";
+        let solution = "";
+
+        function isOperator(char) {
+            return ['+', '-', '*', '/', '%'].includes(char);
+        }
+
+        function formatWithCommas(expr) {
+            return expr.replace(/\d{4,}/g, match => {
+                let before = match.slice(0, 2); 
+                let rest = match.slice(2).replace(/(\d{2})(?=\d)/g, "$1,");
+                return before + "," + rest;
+            });
+        }
+
+        function myfunc(value) {
+            const lastChar = input.slice(-1);
+            if (isOperator(value)) {
+                if (input === "" || isOperator(lastChar)) {
+                    input = input.slice(0, -1); 
+                }
+            }
+
+            if (value === '.' && input.includes('.') && !isOperator(lastChar)) return;
+
+            input += value;
+            document.getElementById("demo1").innerHTML = formatWithCommas(input);
+        }
+
+        function clears() {
+            input = "";
+            solution = "";
+            document.getElementById("demo1").innerHTML = "";
+            document.getElementById("demo2").innerHTML = "";
+        }
+
+        function backspaces() {
+            input = input.slice(0, -1);
+            document.getElementById("demo1").innerHTML = formatWithCommas(input);
+        }
+
+        function answer() {
+            try {
+                let evalResult = eval(input);
+                solution = evalResult;
+                document.getElementById("demo2").innerHTML = evalResult.toLocaleString();
+                input = evalResult.toString();
+                document.getElementById("demo1").innerHTML = formatWithCommas(input);
+            } catch {
+                document.getElementById("demo2").innerHTML = "error";
+            }
+        }
+
+        function negate() {
+            if (input !== "") {
+                input = input.startsWith('-') ? input.slice(1) : '-' + input;
+                document.getElementById("demo1").innerHTML = formatWithCommas(input);
+            }
+        }
+
+        document.addEventListener("keydown", function (e) {
+            const key = e.key;
+            if (!isNaN(key) || isOperator(key) || key === '.') {
+                myfunc(key);
+            } else if (key === "Enter") {
+                answer();
+            } else if (key === "Backspace") {
+                backspaces();
+            } else if (key === "Escape") {
+                clears();
+            }
+        });
+    </script>
+
+</body>
+
+</html>
